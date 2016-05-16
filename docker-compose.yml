@@ -33,9 +33,17 @@ services:
       - SONARQUBE_JDBC_PASSWORD=sonar
       - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-database:5432/sonar
   nginx:
+    container_name: nginx-udd
     build: nginx/.
     ports:
-      - "6003:80"
+      - "80:80"
+    volumes:
+      - ./nginx/WelcomePage:/usr/share/nginx/html
+    links:
+      - sonar
+      - jenkins
+    environment:
+      - NGINX_HOST=localhost
 
 volumes:
   jenkins-data:
