@@ -1,0 +1,62 @@
+version : '2'
+services:
+  jenkins:
+    container_name: jenkins-udd
+    image: jenkins:2.3
+    ports:
+      - "6001:8080"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+    environment:
+      - JENKINS_OPTS=--prefix=/jenkins
+  sonarqube-database:
+    container_name: sonar-database-udd
+    image: postgres:9.4
+    volumes:
+      - sonarqube-database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRESQL_DB=sonar
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+  sonar:
+    container_name: sonar-udd
+    image : sonarqube:5.5
+    ports:
+      - "6002:9000"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-data:/opt/sonarqube/extensions
+    links:
+      - sonarqube-database
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-database:5432/sonar
+  nginx:
+    build: nginx/.
+    ports:
+      - "6003:80"
+
+volumes:
+  jenkins-data:
+  sonarqube-database-data:
+  sonarqube-data:
+
+
+
+
+#cmd_jenkins="docker run -d -p ${JENKINS_PORT}:8080 -v ${docker_jenkins_data_volume}:/var/jenkins_home -t --name jenkins jenkins:2.3 --prefix=/jenkins"
+#launch_docker_container $docker_jenkins_name "${cmd_jenkins}"
+
+#    version: '2'
+#    services:
+#      web:
+#        build: .
+#        ports:
+#         - "5000:5000"
+#        volumes:
+#         - .:/code
+#        depends_on:
+#         - redis
+#      redis:
+#        image: redis
