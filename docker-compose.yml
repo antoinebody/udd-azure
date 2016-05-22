@@ -19,8 +19,6 @@ services:
   sonar:
     container_name: sonar-udd
     image : sonarqube:5.5
-    ports:
-      - "6002:9000"
     volumes:
       - sonarqube-data-data:/opt/sonarqube/data
       - sonarqube-extensions-data:/opt/sonarqube/extensions
@@ -30,6 +28,10 @@ services:
       - SONARQUBE_JDBC_USERNAME=sonar
       - SONARQUBE_JDBC_PASSWORD=sonar
       - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-database:5432/sonar
+    entrypoint:
+      - ./bin/run.sh
+      - -Dsonar.log.level=INFO
+      - -Dsonar.web.context=/sonar
   nginx:
     container_name: nginx-udd
     build: nginx/.
