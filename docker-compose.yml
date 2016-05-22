@@ -3,8 +3,6 @@ services:
   jenkins:
     container_name: jenkins-udd
     image: jenkins:2.3
-    ports:
-      - "6001:8080"
     volumes:
       - jenkins-data:/var/jenkins_home
     environment:
@@ -24,8 +22,8 @@ services:
     ports:
       - "6002:9000"
     volumes:
-      - sonarqube-data:/opt/sonarqube/data
-      - sonarqube-data:/opt/sonarqube/extensions
+      - sonarqube-data-data:/opt/sonarqube/data
+      - sonarqube-extensions-data:/opt/sonarqube/extensions
     links:
       - sonarqube-database
     environment:
@@ -37,34 +35,16 @@ services:
     build: nginx/.
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/WelcomePage:/usr/share/nginx/html
     links:
       - sonar
       - jenkins
     environment:
+      - NGINX_PORT=80
       - NGINX_HOST=localhost
+  sonarqube-database-data:
+    command: /bin/bash -c "envsubst < /var/tmp/udd.conf > /etc/nginx/conf.d/udd.conf && nginx -g 'daemon off;'"
 
 volumes:
   jenkins-data:
-  sonarqube-database-data:
-  sonarqube-data:
-
-
-
-
-#cmd_jenkins="docker run -d -p ${JENKINS_PORT}:8080 -v ${docker_jenkins_data_volume}:/var/jenkins_home -t --name jenkins jenkins:2.3 --prefix=/jenkins"
-#launch_docker_container $docker_jenkins_name "${cmd_jenkins}"
-
-#    version: '2'
-#    services:
-#      web:
-#        build: .
-#        ports:
-#         - "5000:5000"
-#        volumes:
-#         - .:/code
-#        depends_on:
-#         - redis
-#      redis:
-#        image: redis
+  sonarqube-data-data:
+  sonarqube-extensions-data:
