@@ -19,8 +19,8 @@ services:
   sonar:
     container_name: sonar-udd
     image : sonarqube:5.5
-#    ports:
-#      - "6002:9000"
+    ports:
+      - "6002:9000"
     volumes:
       - sonarqube-data-data:/opt/sonarqube/data
       - sonarqube-extensions-data:/opt/sonarqube/extensions
