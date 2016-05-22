@@ -2,8 +2,9 @@ FROM nginx
 
 COPY WelcomePage /usr/share/nginx/welcome
 
-#CMD rm /etc/nginx/conf.d/default.conf
-COPY configuration/sites-available/udd  /etc/nginx/conf.d
+
+RUN ["rm", "/etc/nginx/conf.d/default.conf"]
+COPY configuration/conf.d/udd.conf  /etc/nginx/conf.d/
 
 
 
